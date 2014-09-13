@@ -158,7 +158,7 @@ class Isucon3App < Sinatra::Base
     mysql = connection
     user  = get_user
 
-    memo = mysql.xquery('SELECT id, user, content, is_private, created_at, updated_at FROM memos WHERE id=?', params[:memo_id]).first
+    memo = mysql.xquery('SELECT u.username, m.id, m.user, m.content, m.is_private, m.created_at, m.updated_at FROM memos AS m LEFT JOIN users AS u ON u.id = m.user WHERE m.id=?', params[:memo_id]).first
     unless memo
       halt 404, "404 Not Found"
     end
@@ -167,7 +167,6 @@ class Isucon3App < Sinatra::Base
         halt 404, "404 Not Found"
       end
     end
-    memo["username"] = mysql.xquery('SELECT username FROM users WHERE id=?', memo["user"]).first["username"]
     memo["content_html"] = gen_markdown(memo["content"])
     if user["id"] == memo["user"]
       cond = ""
