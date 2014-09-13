@@ -36,7 +36,7 @@ class Isucon3App < Sinatra::Base
       mysql = connection
       user_id = session["user_id"]
       if user_id
-        user = mysql.xquery("SELECT * FROM users WHERE id=?", user_id).first
+        user = mysql.xquery("SELECT id, username FROM users WHERE id=?", user_id).first
         headers "Cache-Control" => "private"
       end
       return user || {}
@@ -175,7 +175,7 @@ class Isucon3App < Sinatra::Base
     memos = []
     older = nil
     newer = nil
-    results = mysql.xquery("SELECT * FROM memos WHERE user=? #{cond} ORDER BY created_at", memo["user"])
+    results = mysql.xquery("SELECT id FROM memos WHERE user=? #{cond} ORDER BY created_at", memo["user"])
     results.each do |m|
       memos.push(m)
     end
